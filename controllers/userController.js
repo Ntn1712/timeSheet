@@ -46,7 +46,7 @@ class authController {
           $match: { taskAuthor: ObjectId(req.user._id) },
         },
       ]);
-      if (!task) return;
+      if (task.length == 0) return;
       return task;
     } catch (err) {
       console.log(err);

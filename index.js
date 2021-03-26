@@ -21,8 +21,12 @@ mongoose.connect(
 );
 
 app.use(authRoutes);
-app.use(userRoutes);
-app.use(taskRoutes);
+app.use("/user", userRoutes);
+app.use("/task", taskRoutes);
+
+app.use((req, res) => {
+  res.status(404).send("Page not found");
+});
 
 app.listen(PORT, (req, res) => {
   console.log(`Listening on PORT: ${PORT}`);

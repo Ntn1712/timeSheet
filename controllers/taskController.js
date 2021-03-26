@@ -44,22 +44,24 @@ class taskController {
     return task;
   }
 
-  static async fetchTaskDate(date) {
+  static async fetchTaskDate(date, para, value) {
     let da = new Date(date);
+    let query = {};
+    query[para] = parseInt(value);
     const task = await Task.aggregate([
       {
         $match: { taskDate: da },
       },
       {
-        $sort: { taskHour: 1 },
+        $sort: query,
       },
     ]);
-    if (!task) return;
+    if (task.length == 0) return;
     return task;
   }
 
   static async fetchTaskMonth(month, para, value, req) {
-    var query = {};
+    let query = {};
     query[para] = parseInt(value);
     const task = await Task.aggregate([
       {
@@ -79,17 +81,43 @@ class taskController {
       {
         $sort: query,
       },
+      //   {
+      //     $group: {
+      //       _id: {
+      //         taskAuthor: "$taskAuthor",
+      //       },
+      //       avgHours: {
+      //         $avg: "$taskHour",
+      //       },
+      //     },
+      //   },
+    ]);
+    if (task.length == 0) return;
+    return task;
+  }
+
+  static async fetchTaskWeek(startDate, req) {
+    let da = new Date(startDate);
+    const task = await Task.aggregate([
+      {
+        $match: {
+          taskDate: { $gt: da },
+        },
+      },
       {
         $group: {
           _id: {
-            taskAuthor: "$taskAuthor",
+            week: {
+              $week: "$taskDate",
+            },
           },
-          avgHours: {
+          AvgHours: {
             $avg: "$taskHour",
           },
         },
       },
     ]);
+    if (task.length == 0) return;
     return task;
   }
 }
