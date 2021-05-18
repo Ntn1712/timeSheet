@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const taskRoutes = require("./routes/task");
 
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 mongoose.connect(
